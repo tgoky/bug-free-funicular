@@ -3,63 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategy Consultation Booking</title>
+    <title>Book Your Consultation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@whop/react@latest/dist/checkout.umd.js"></script>
+</head>
+<body>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
-
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            background: transparent;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
             padding: 20px;
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: #2D3748;
         }
 
-        .consultation-widget {
-            background: #FFFFFF;
+        .consultation-container {
+            background: white;
             border-radius: 16px;
             padding: 40px;
             text-align: center;
-            width: 100%;
             max-width: 480px;
-            margin: 0 auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .consultation-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
 
         .widget-header {
-            margin-bottom: 28px;
+            margin-bottom: 32px;
             padding-bottom: 24px;
-            border-bottom: 1px solid #E2E8F0;
+            border-bottom: 1px solid #f3f4f6;
         }
 
         .widget-title {
-            color: #1A202C;
+            color: #111827;
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 12px;
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         .widget-subtitle {
-            color: #4A5568;
+            color: #6b7280;
             font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 8px;
             line-height: 1.5;
+            margin-bottom: 20px;
         }
 
         .widget-price {
-            color: #1A202C;
-            font-size: 32px;
-            font-weight: 700;
+            color: #111827;
+            font-size: 36px;
+            font-weight: 800;
             margin: 20px 0;
             display: flex;
             align-items: center;
@@ -67,101 +80,46 @@
             gap: 8px;
         }
 
-        .widget-price span {
-            font-size: 18px;
-            font-weight: 500;
-            color: #718096;
-        }
-
-        .consultation-button {
-            background: #4F46E5;
-            color: white;
-            border: none;
-            padding: 18px 24px;
-            font-size: 16px;
+        .widget-price .currency {
+            font-size: 20px;
             font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 100%;
-            display: block;
-            letter-spacing: 0.5px;
-            text-decoration: none;
-            margin: 24px 0;
+            color: #6b7280;
         }
 
-        .consultation-button:hover {
-            background: #4338CA;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        .checkout-section {
+            margin: 32px 0;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .consultation-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+        .checkout-iframe-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f9fafb;
+            min-height: 400px;
+            position: relative;
         }
 
-        .consultation-button:disabled {
-            background: #CBD5E0;
-            color: #718096;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .checkout-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #6b7280;
+            font-size: 16px;
+            gap: 12px;
         }
 
-        .consultation-button.success {
-            background: #059669;
-        }
-
-        .consultation-button.success:hover {
-            background: #047857;
-        }
-
-        .widget-status-message {
-            margin: 20px 0;
-            padding: 16px;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            text-align: left;
-            line-height: 1.5;
-        }
-
-        .widget-success {
-            background: #ECFDF5;
-            color: #065F46;
-            border: 1px solid #A7F3D0;
-        }
-
-        .widget-error {
-            background: #FEF2F2;
-            color: #B91C1C;
-            border: 1px solid #FECACA;
-        }
-
-        .widget-loading {
-            background: #EFF6FF;
-            color: #1E40AF;
-            border: 1px solid #BFDBFE;
-        }
-
-        .widget-warning {
-            background: #FFFBEB;
-            color: #92400E;
-            border: 1px solid #FDE68A;
-        }
-
-        .widget-loading-spinner {
-            display: inline-block;
-            margin-right: 10px;
-            width: 16px;
-            height: 16px;
-            border: 2px solid transparent;
-            border-top: 2px solid currentColor;
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            vertical-align: middle;
         }
 
         @keyframes spin {
@@ -169,101 +127,96 @@
             100% { transform: rotate(360deg); }
         }
 
-        .widget-note {
+        .widget-status-message {
+            margin: 24px 0;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .widget-success {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .widget-error {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .widget-info {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .consultation-features {
+            text-align: left;
+            margin: 24px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .consultation-features h3 {
+            color: #111827;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .feature-list {
+            list-style: none;
+            space-y: 8px;
+        }
+
+        .feature-list li {
+            color: #374151;
             font-size: 14px;
-            color: #718096;
-            margin-top: 16px;
             line-height: 1.5;
+            padding: 6px 0;
+            position: relative;
+            padding-left: 24px;
         }
 
-        .tracking-info {
-            font-size: 13px;
-            color: #4A5568;
-            margin-top: 24px;
-            padding: 16px;
-            background: #F7FAFC;
-            border-radius: 8px;
-            border: 1px solid #E2E8F0;
-            text-align: left;
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-        }
-
-        .tracking-info strong {
-            display: block;
-            margin-bottom: 8px;
-            color: #1A202C;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .tracking-info div {
-            margin-bottom: 6px;
-        }
-
-        .success-icon {
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
             color: #059669;
-            margin-right: 8px;
-            font-size: 18px;
-            vertical-align: middle;
+            font-weight: bold;
         }
 
-        .error-icon {
-            color: #B91C1C;
-            margin-right: 8px;
-            font-size: 18px;
-            vertical-align: middle;
-        }
-
-        .warning-icon {
-            color: #92400E;
-            margin-right: 8px;
-            font-size: 18px;
-            vertical-align: middle;
-        }
-
-        .debug-info {
-            font-size: 12px;
-            color: #718096;
-            margin-top: 16px;
-            padding: 12px;
-            background: #F7FAFC;
-            border-radius: 6px;
-            border: 1px solid #E2E8F0;
-            text-align: left;
-            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .helpful-links {
-            margin-top: 20px;
+        .widget-note {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 24px;
+            line-height: 1.5;
             padding: 16px;
-            background: #F0F9FF;
-            border-radius: 8px;
-            border: 1px solid #BAE6FD;
-            text-align: left;
+            background: #f9fafb;
+            border-radius: 6px;
         }
 
-        .helpful-links strong {
-            color: #0C4A6E;
-            display: block;
-            margin-bottom: 8px;
+        .success-animation {
+            animation: successPulse 0.6s ease-out;
         }
 
-        .helpful-links a {
-            color: #2563EB;
-            text-decoration: none;
-            display: block;
-            margin: 4px 0;
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        .helpful-links a:hover {
-            color: #1D4ED8;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
-            .consultation-widget {
-                padding: 28px 20px;
+        @media (max-width: 640px) {
+            .consultation-container {
+                margin: 10px;
+                padding: 24px;
             }
             
             .widget-title {
@@ -271,432 +224,188 @@
             }
             
             .widget-price {
-                font-size: 28px;
+                font-size: 32px;
             }
         }
     </style>
-</head>
-<body>
-    <div class="consultation-widget">
+
+    <div class="consultation-container">
         <div class="widget-header">
-            <h1 class="widget-title">Strategy Consultation Call</h1>
-            <p class="widget-subtitle">Get personalized advice from our experts</p>
-            <div class="widget-price">$1 <span>USD</span></div>
+            <h1 class="widget-title">Book Your Strategy Session</h1>
+            <p class="widget-subtitle">Get personalized guidance to accelerate your success</p>
+            <div class="widget-price">
+                <span class="currency">$</span>197
+            </div>
         </div>
-
-        <div id="consultationStatusMessage"></div>
-
-        <button id="consultationButton" class="consultation-button" onclick="handleConsultationBooking()">
-            Secure Your Session
-        </button>
-
-        <p class="widget-note">You'll be charged $1 USD immediately when booking this consultation. All sessions are 30 minutes via video call.</p>
         
-        <div id="trackingInfo" class="tracking-info" style="display: none;"></div>
-        <div id="helpfulLinks" class="helpful-links" style="display: none;"></div>
-        <div id="debugInfo" class="debug-info" style="display: none;"></div>
+        <div class="consultation-features">
+            <h3>What You'll Get:</h3>
+            <ul class="feature-list">
+                <li>60-minute one-on-one strategy session</li>
+                <li>Personalized action plan for your goals</li>
+                <li>Direct access to proven strategies</li>
+                <li>Recording of the session for reference</li>
+                <li>Follow-up resources and templates</li>
+            </ul>
+        </div>
+        
+        <div id="consultationStatusMessage"></div>
+        
+        <div class="checkout-section">
+            <div id="checkoutContainer" class="checkout-iframe-container">
+                <div class="checkout-loading">
+                    <div class="loading-spinner"></div>
+                    Preparing your checkout...
+                </div>
+            </div>
+        </div>
+        
+        <p class="widget-note">
+            <strong>Secure Payment:</strong> Your payment is processed securely through Whop. 
+            After completing your purchase, you'll receive booking instructions via email.
+        </p>
     </div>
 
     <script>
-        // Configuration - UPDATE THIS TO YOUR DEPLOYED SERVER URL
+        // Configuration - UPDATE THESE VALUES
         const CONSULTATION_CONFIG = {
-            serverUrl: 'https://oto-server-btn.vercel.app/api',
-            consultationFee: 1.00,
+            serverUrl: 'https://oto-server-btn.vercel.app/api', // Your server URL
+            consultationPlanId: 'plan_consultation_197', // Your consultation plan ID
+            consultationFee: 197.00,
             currency: 'usd',
             consultationType: 'personal_strategy'
         };
 
-        // Debug mode - set to true for detailed error info
-        const DEBUG_MODE = true;
-
-        // FIXED: Enhanced payment ID extraction with multiple parameter options
-        function getConsultationReceiptId() {
+        // Get receipt_id from URL parameters
+        function getOriginalReceiptId() {
             const urlParams = new URLSearchParams(window.location.search);
-            
-            // Try multiple possible parameter names in order of preference
-            const possibleParams = [
-                'receipt_id',    // Your custom parameter
-                'payment_id',    // Whop's standard parameter
-                'id',           // Generic fallback
-                'pay_id',       // Alternative
-                'transaction_id' // Another alternative
-            ];
-            
-            for (const param of possibleParams) {
-                const value = urlParams.get(param);
-                if (value) {
-                    console.log(`Found payment ID in parameter '${param}': ${value}`);
-                    return value;
-                }
-            }
-            
-            console.log('No payment ID found in any URL parameter');
-            console.log('Available parameters:', Object.fromEntries(urlParams.entries()));
-            return null;
+            return urlParams.get('receipt_id');
         }
 
-        // Show debug information
-        function showDebugInfo(info) {
-            if (!DEBUG_MODE) return;
-            
-            const debugDiv = document.getElementById('debugInfo');
-            debugDiv.innerHTML = `<strong>Debug Info:</strong><br><pre>${JSON.stringify(info, null, 2)}</pre>`;
-            debugDiv.style.display = 'block';
-        }
-
-        // Show status message with enhanced types
-        function showConsultationStatus(message, type) {
+        // Show status message
+        function showStatus(message, type) {
             const statusDiv = document.getElementById('consultationStatusMessage');
-            let icon = '';
+            statusDiv.innerHTML = `<div class="widget-status-message ${type}">${message}</div>`;
             
             if (type === 'widget-success') {
-                icon = '<span class="success-icon">✓</span>';
-            } else if (type === 'widget-error') {
-                icon = '<span class="error-icon">✕</span>';
-            } else if (type === 'widget-warning') {
-                icon = '<span class="warning-icon">⚠</span>';
+                statusDiv.firstElementChild.classList.add('success-animation');
             }
-            
-            const spinner = type === 'widget-loading' ? '<span class="widget-loading-spinner"></span>' : icon;
-            statusDiv.innerHTML = `<div class="widget-status-message ${type}">${spinner}${message}</div>`;
         }
 
-        // Show helpful links for payment method issues
-        function showHelpfulLinks() {
-            const linksDiv = document.getElementById('helpfulLinks');
-            linksDiv.innerHTML = `
-                <strong>Need to add a payment method?</strong>
-                <a href="https://whop.com/account/payment-methods" target="_blank">→ Add Payment Method to Whop Account</a>
-                <a href="https://whop.com/account/billing" target="_blank">→ View Billing Settings</a>
-                <a href="https://whop.com/support" target="_blank">→ Contact Whop Support</a>
-            `;
-            linksDiv.style.display = 'block';
+        // Generate security token
+        function generateSecurityToken() {
+            return `sec_${Math.random().toString(36).substring(2)}${Date.now()}`;
         }
 
-        // Show tracking information
-        function showTrackingInfo(info) {
-            const trackingDiv = document.getElementById('trackingInfo');
-            trackingDiv.innerHTML = `
-                <strong>Booking Details</strong>
-                <div>Original Payment: ${info.original_payment || 'N/A'}</div>
-                <div>Consultation Payment: ${info.consultation_payment || 'N/A'}</div>
-                <div>Plan ID: ${info.planId || 'N/A'}</div>
-                <div>Upsell Tracked: ${info.upsell_tracked ? '✓' : '✗'}</div>
-                <div>Booking ID: ${info.bookingId || 'N/A'}</div>
-                <div>Payment Method: ${info.payment_method_details || 'N/A'}</div>
-            `;
-            trackingDiv.style.display = 'block';
-        }
-
-        // Generate security token that meets API requirements (> 20 chars)
-        function generateConsultationToken() {
-            const randomPart1 = Math.random().toString(36).substring(2);
-            const randomPart2 = Math.random().toString(36).substring(2);
-            const timestamp = Date.now().toString(36);
-            const token = `sec_${randomPart1}${randomPart2}${timestamp}`;
-            console.log(`Generated security token: ${token} (length: ${token.length})`);
-            return token;
-        }
-
-        // Enhanced API call with better error handling and payment method guidance
-        async function makeConsultationApiCall(endpoint, data = null) {
-            const url = `${CONSULTATION_CONFIG.serverUrl}${endpoint}`;
-            
-            console.log(`Making API call to: ${url}`);
-            if (data) {
-                console.log('Request data (before token):', data);
-            }
-            
+        // Make API call to server for tracking
+        async function makeTrackingApiCall(endpoint, data) {
             const options = {
-                method: data ? 'POST' : 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
                 },
+                body: JSON.stringify({
+                    ...data,
+                    securityToken: generateSecurityToken(),
+                    timestamp: Date.now()
+                })
             };
 
-            if (data) {
-                data.securityToken = generateConsultationToken();
-                data.timestamp = Date.now();
-                options.body = JSON.stringify(data);
-                
-                console.log('Final request data:', data);
-                console.log('Token length validation:', data.securityToken.length > 20);
-            }
-
             try {
-                console.log('Sending request with options:', options);
-                const response = await fetch(url, options);
-                
-                console.log('Response status:', response.status);
-                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-                
-                const contentType = response.headers.get('content-type');
-                console.log('Content-Type:', contentType);
-                
-                if (!contentType || !contentType.includes('application/json')) {
-                    const textResponse = await response.text();
-                    console.error('Server returned non-JSON response:', textResponse);
-                    
-                    showDebugInfo({
-                        error: 'Server returned non-JSON response',
-                        contentType: contentType,
-                        status: response.status,
-                        statusText: response.statusText,
-                        responseText: textResponse.substring(0, 500),
-                        url: url
-                    });
-                    
-                    throw new Error(`Server error: Expected JSON response but got ${contentType || 'unknown content type'}. Status: ${response.status}`);
-                }
-                
-                const responseText = await response.text();
-                console.log('Raw response text:', responseText);
-                
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                    console.log('Parsed response:', result);
-                } catch (parseError) {
-                    console.error('JSON parse error:', parseError);
-                    console.error('Failed to parse response:', responseText);
-                    
-                    showDebugInfo({
-                        error: 'JSON parse error',
-                        parseError: parseError.message,
-                        responseText: responseText,
-                        contentType: contentType,
-                        status: response.status
-                    });
-                    
-                    throw new Error(`Server returned invalid JSON: ${parseError.message}`);
-                }
+                const response = await fetch(`${CONSULTATION_CONFIG.serverUrl}${endpoint}`, options);
+                const result = await response.json();
                 
                 if (!response.ok) {
-                    const errorMessage = result.error || `Server error: ${response.status} - ${response.statusText}`;
-                    console.error('API returned error:', errorMessage, result);
-                    
-                    showDebugInfo({
-                        error: 'API error response',
-                        status: response.status,
-                        statusText: response.statusText,
-                        apiError: result.error,
-                        fullResponse: result,
-                        debugInfo: result.debugInfo
-                    });
-                    
-                    throw new Error(errorMessage);
+                    console.warn('Tracking API error:', result.error);
+                    // Don't throw - tracking failures shouldn't break the flow
                 }
                 
                 return result;
-                
             } catch (error) {
-                console.error('API call error:', error);
-                
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    showDebugInfo({
-                        error: 'Network connection error',
-                        url: url,
-                        message: error.message,
-                        suggestion: 'Check if server is running and accessible'
-                    });
-                    throw new Error(`Cannot connect to server at ${CONSULTATION_CONFIG.serverUrl}. Please check if the server is running.`);
-                }
-                
-                if (error.message.includes('Server error:') || error.message.includes('Server returned')) {
-                    throw error;
-                }
-                
-                showDebugInfo({
-                    error: 'Unexpected API call error',
-                    url: url,
-                    message: error.message,
-                    stack: error.stack,
-                    errorType: error.constructor.name
-                });
-                
-                throw new Error(`API call failed: ${error.message}`);
+                console.warn('Tracking API failed:', error.message);
+                // Don't throw - tracking failures shouldn't break the flow
+                return null;
             }
         }
 
-        // Enhanced consultation booking handler with better payment method messaging
-        async function handleConsultationBooking() {
-            const button = document.getElementById('consultationButton');
-            const originalButtonText = button.textContent;
+        // Initialize Whop checkout embed
+        function initializeWhopCheckout() {
+            const originalReceiptId = getOriginalReceiptId();
             
-            button.disabled = true;
-            button.textContent = 'Processing...';
+            if (!originalReceiptId) {
+                showStatus('Session expired. Please return from your original purchase page.', 'widget-error');
+                return;
+            }
 
-            try {
-                const receiptId = getConsultationReceiptId();
-                if (!receiptId) {
-                    throw new Error('Session expired. Please return from your original purchase page.');
-                }
+            showStatus('Ready to book your strategy session', 'widget-info');
 
-                console.log('Starting consultation booking for receipt:', receiptId);
-
-                // Step 1: Validate session
-                showConsultationStatus('Verifying your payment details...', 'widget-loading');
+            // Create checkout embed using Whop's embedded checkout
+            const checkoutContainer = document.getElementById('checkoutContainer');
+            
+            // Create iframe for Whop checkout
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://whop.com/checkout/${CONSULTATION_CONFIG.consultationPlanId}?embed=true&utm_source=upsell&utm_campaign=consultation&utm_content=${originalReceiptId}`;
+            iframe.style.cssText = `
+                width: 100%;
+                height: 400px;
+                border: none;
+                border-radius: 8px;
+                background: white;
+            `;
+            iframe.allow = 'payment';
+            
+            // Listen for checkout completion
+            window.addEventListener('message', async function(event) {
+                // Verify the message is from Whop
+                if (event.origin !== 'https://whop.com') return;
                 
-                let validationResult;
-                try {
-                    validationResult = await makeConsultationApiCall('/validate', {
-                        id: receiptId
-                    });
-                    console.log('Validation successful:', validationResult);
+                if (event.data.type === 'whop-checkout-complete') {
+                    const { planId, receiptId } = event.data;
                     
-                    if (!validationResult.success) {
-                        throw new Error(validationResult.error || 'Payment verification failed');
-                    }
+                    console.log('Checkout completed:', { planId, receiptId });
                     
-                } catch (validationError) {
-                    console.error('Validation failed:', validationError);
-                    throw new Error(`Payment verification failed: ${validationError.message}`);
-                }
-
-                // Step 2: Process consultation booking and charge card
-                showConsultationStatus('Processing payment for your consultation...', 'widget-loading');
-                
-                const bookingResult = await makeConsultationApiCall('/book', {
-                    id: receiptId,
-                    consultation_type: CONSULTATION_CONFIG.consultationType,
-                    amount: CONSULTATION_CONFIG.consultationFee
-                });
-
-                console.log('Booking result:', bookingResult);
-
-                if (bookingResult.success) {
-                    if (bookingResult.paymentId) {
-                        showConsultationStatus('Payment successful! Your consultation has been booked.', 'widget-success');
-                        button.textContent = '✓ Session Booked';
-                        button.className = 'consultation-button success';
-                        
-                        showTrackingInfo({
-                            ...bookingResult.trackingInfo,
-                            planId: bookingResult.planId,
-                            bookingId: bookingResult.bookingId
+                    showStatus('🎉 Payment successful! Booking your consultation...', 'widget-success');
+                    
+                    // Track the upsell purchase
+                    try {
+                        await makeTrackingApiCall('/track-upsell', {
+                            original_receipt_id: originalReceiptId,
+                            consultation_receipt_id: receiptId,
+                            consultation_plan_id: planId,
+                            amount: CONSULTATION_CONFIG.consultationFee,
+                            upsell_type: 'consultation'
                         });
-
-                        setTimeout(() => {
-                            if (bookingResult.bookingId) {
-                                showConsultationStatus(
-                                    `✓ Confirmation ID: ${bookingResult.bookingId}<br>Check your email for scheduling details.`, 
-                                    'widget-success'
-                                );
-                            }
-                        }, 3000);
-
-                    } else if (bookingResult.checkout_url) {
-                        showConsultationStatus('Redirecting to secure payment page...', 'widget-loading');
-                        
-                        setTimeout(() => {
-                            window.location.href = bookingResult.checkout_url;
-                        }, 1500);
-                        return;
-                    } else {
-                        console.error('Unexpected booking response format:', bookingResult);
-                        throw new Error('Unexpected response from payment processor');
+                    } catch (trackingError) {
+                        console.warn('Upsell tracking failed:', trackingError);
                     }
-                } else {
-                    throw new Error(bookingResult.error || 'Booking failed - unknown error');
-                }
-
-            } catch (error) {
-                console.error('Consultation booking failed:', error);
-                
-                // Enhanced error messaging for payment method issues
-                let userMessage = error.message;
-                let showLinks = false;
-                
-                if (error.message.includes('No saved payment methods found') || 
-                    error.message.includes('payment method') ||
-                    error.message.includes('add a payment method')) {
                     
-                    userMessage = 'No payment method found on your Whop account. You need to add a payment method first before booking consultations.';
-                    showLinks = true;
-                    
-                    showConsultationStatus(userMessage, 'widget-warning');
-                    showHelpfulLinks();
-                    
-                } else if (error.message.includes('Payment verification failed')) {
-                    userMessage = 'Unable to verify your original payment. Please make sure you\'re using the correct link from your purchase confirmation.';
-                } else if (error.message.includes('Cannot connect to server')) {
-                    userMessage = 'Unable to connect to payment processor. Please check your internet connection and try again.';
-                } else if (error.message.includes('Session expired')) {
-                    userMessage = 'Session expired. Please return from your original purchase page using the consultation booking link.';
+                    // Show success message
+                    setTimeout(() => {
+                        showStatus(
+                            `✅ Consultation booked successfully!<br>
+                            <small>Receipt ID: ${receiptId}</small><br>
+                            <small>Check your email for booking details.</small>`, 
+                            'widget-success'
+                        );
+                        
+                        // Hide the checkout iframe
+                        checkoutContainer.style.display = 'none';
+                    }, 1500);
                 }
                 
-                if (!showLinks) {
-                    showConsultationStatus(`Booking failed: ${userMessage}`, 'widget-error');
+                if (event.data.type === 'whop-checkout-error') {
+                    showStatus('Payment failed. Please try again.', 'widget-error');
                 }
-                
-                // Re-enable button with appropriate text
-                button.disabled = false;
-                if (showLinks) {
-                    button.textContent = 'Try Again After Adding Payment Method';
-                } else {
-                    button.textContent = 'Try Again';
-                }
-                button.className = 'consultation-button';
-                
-                // Show debug info for troubleshooting
-                showDebugInfo({
-                    error: error.message,
-                    receiptId: getConsultationReceiptId(),
-                    serverUrl: CONSULTATION_CONFIG.serverUrl,
-                    timestamp: new Date().toISOString(),
-                    urlParams: Object.fromEntries(new URLSearchParams(window.location.search).entries()),
-                    errorStack: error.stack
-                });
-            }
+            });
+            
+            // Replace loading with iframe
+            checkoutContainer.innerHTML = '';
+            checkoutContainer.appendChild(iframe);
         }
 
-        // Initialize consultation widget
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            const receiptId = getConsultationReceiptId();
-
-            console.log('Page loaded');
-            console.log('Receipt ID:', receiptId);
-            console.log('Server URL:', CONSULTATION_CONFIG.serverUrl);
-            console.log('Debug mode:', DEBUG_MODE);
-
-            if (receiptId) {
-                showConsultationStatus('Ready to book your consultation session', 'widget-success');
-                console.log('Widget ready for booking');
-            } else {
-                showConsultationStatus('No payment ID found in URL. Please make sure you\'re accessing this page from your purchase confirmation.', 'widget-error');
-                document.getElementById('consultationButton').disabled = true;
-                console.log('No receipt ID found in URL parameters');
-                
-                // Show what parameters are available
-                const urlParams = new URLSearchParams(window.location.search);
-                const allParams = Object.fromEntries(urlParams.entries());
-                console.log('Available URL parameters:', allParams);
-                
-                if (Object.keys(allParams).length > 0) {
-                    showConsultationStatus(
-                        `URL parameters found: ${Object.keys(allParams).join(', ')}<br>Expected: receipt_id, payment_id, or id<br><br>Please use the correct booking link from your purchase confirmation.`, 
-                        'widget-warning'
-                    );
-                }
-            }
-            
-            // Show URL parameters for debugging
-            if (DEBUG_MODE) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const allParams = Object.fromEntries(urlParams.entries());
-                console.log('URL parameters:', allParams);
-                
-                if (Object.keys(allParams).length > 0) {
-                    showDebugInfo({
-                        urlParameters: allParams,
-                        currentUrl: window.location.href,
-                        serverUrl: CONSULTATION_CONFIG.serverUrl,
-                        expectedParameters: ['receipt_id', 'payment_id', 'id'],
-                        foundPaymentId: receiptId
-                    });
-                }
-            }
+            initializeWhopCheckout();
         });
     </script>
 </body>
