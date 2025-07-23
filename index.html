@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Consultation Booking</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: transparent;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #2D3748;
+        }
+
+        .consultation-widget {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .widget-header {
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .widget-title {
+            color: #1A202C;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .widget-subtitle {
+            color: #4A5568;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .widget-price {
+            color: #1A202C;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .widget-price span {
+            font-size: 18px;
+            font-weight: 500;
+            color: #718096;
+        }
+
+        .consultation-button {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 18px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            display: block;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            margin: 24px 0;
+        }
+
+        .consultation-button:hover {
+            background: #4338CA;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        .consultation-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+        }
+
+        .consultation-button:disabled {
+            background: #CBD5E0;
+            color: #718096;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .consultation-button.success {
+            background: #059669;
+        }
+
+        .consultation-button.success:hover {
+            background: #047857;
+        }
+
+        .widget-status-message {
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .widget-success {
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+
+        .widget-error {
+            background: #FEF2F2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+        }
+
+        .widget-loading {
+            background: #EFF6FF;
+            color: #1E40AF;
+            border: 1px solid #BFDBFE;
+        }
+
+        .widget-loading-spinner {
+            display: inline-block;
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .widget-note {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 16px;
+            line-height: 1.5;
+        }
+
+        .tracking-info {
+            font-size: 13px;
+            color: #4A5568;
+            margin-top: 24px;
+            padding: 16px;
+            background: #F7FAFC;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+            text-align: left;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+        }
+
+        .tracking-info strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #1A202C;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .tracking-info div {
+            margin-bottom: 6px;
+        }
+
+        .success-icon {
+            color: #059669;
+            margin-right: 8px;
+            font-size: 18px;
+            vertical-align: middle;
+        }
+
+        .error-icon {
+            color: #B91C1C;
+            margin-right: 8px;
+            font-size: 18px;
+            vertical-align: middle;
+        }
+
+        .debug-info {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 16px;
+            padding: 12px;
+            background: #F7FAFC;
+            border-radius: 6px;
+            border: 1px solid #E2E8F0;
+            text-align: left;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 480px) {
+            .consultation-widget {
+                padding: 28px 20px;
+            }
+            
+            .widget-title {
+                font-size: 24px;
+            }
+            
+            .widget-price {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="consultation-widget">
+        <div class="widget-header">
+            <h1 class="widget-title">Strategy Consultation Call</h1>
+            <p class="widget-subtitle">Get personalized advice from our experts</p>
+            <div class="widget-price">$1 <span>USD</span></div>
+        </div>
+
+        <div id="consultationStatusMessage"></div>
+
+        <button id="consultationButton" class="consultation-button" onclick="handleConsultationBooking()">
+            Secure Your Session
+        </button>
+
+        <p class="widget-note">You'll be charged $1 USD immediately when booking this consultation. All sessions are 30 minutes via video call.</p>
+        
+        <div id="trackingInfo" class="tracking-info" style="display: none;"></div>
+        <div id="debugInfo" class="debug-info" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Configuration - UPDATE THIS TO YOUR DEPLOYED SERVER URL
+        const CONSULTATION_CONFIG = {
+            serverUrl: 'https://oto-server-btn.vercel.app/api',
+            consultationFee: 1.00,
+            currency: 'usd',
+            consultationType: 'personal_strategy'
+        };
+
+        // Debug mode - set to true for detailed error info
+        const DEBUG_MODE = true;
+
+        // Get payment ID from URL parameters
+        function getConsultationReceiptId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('receipt_id') || urlParams.get('id');
+        }
+
+        // Show debug information
+        function showDebugInfo(info) {
+            if (!DEBUG_MODE) return;
+            
+            const debugDiv = document.getElementById('debugInfo');
+            debugDiv.innerHTML = `<strong>Debug Info:</strong><br><pre>${JSON.stringify(info, null, 2)}</pre>`;
+            debugDiv.style.display = 'block';
+        }
+
+        // Show status message
+        function showConsultationStatus(message, type) {
+            const statusDiv = document.getElementById('consultationStatusMessage');
+            let icon = '';
+            
+            if (type === 'widget-success') {
+                icon = '<span class="success-icon">✓</span>';
+            } else if (type === 'widget-error') {
+                icon = '<span class="error-icon">✕</span>';
+            }
+            
+            const spinner = type === 'widget-loading' ? '<span class="widget-loading-spinner"></span>' : icon;
+            statusDiv.innerHTML = `<div class="widget-status-message ${type}">${spinner}${message}</div>`;
+        }
+
+        // Show tracking information
+        function showTrackingInfo(info) {
+            const trackingDiv = document.getElementById('trackingInfo');
+            trackingDiv.innerHTML = `
+                <strong>Booking Details</strong>
+                <div>Original Payment: ${info.original_payment || 'N/A'}</div>
+                <div>Consultation Payment: ${info.consultation_payment || 'N/A'}</div>
+                <div>Plan ID: ${info.planId || 'N/A'}</div>
+                <div>Upsell Tracked: ${info.upsell_tracked ? '✓' : '✗'}</div>
+                <div>Booking ID: ${info.bookingId || 'N/A'}</div>
+            `;
+            trackingDiv.style.display = 'block';
+        }
+
+        // FIXED: Generate security token that meets API requirements (> 20 chars)
+        function generateConsultationToken() {
+            // Generate a longer random string to ensure > 20 characters
+            const randomPart1 = Math.random().toString(36).substring(2);
+            const randomPart2 = Math.random().toString(36).substring(2);
+            const timestamp = Date.now().toString(36);
+            const token = `sec_${randomPart1}${randomPart2}${timestamp}`;
+            console.log(`Generated security token: ${token} (length: ${token.length})`);
+            return token;
+        }
+
+        // FIXED: Enhanced API call with better error handling
+        async function makeConsultationApiCall(endpoint, data = null) {
+            const url = `${CONSULTATION_CONFIG.serverUrl}${endpoint}`;
+            
+            console.log(`Making API call to: ${url}`);
+            if (data) {
+                console.log('Request data (before token):', data);
+            }
+            
+            const options = {
+                method: data ? 'POST' : 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            };
+
+            if (data) {
+                // Add security token and timestamp
+                data.securityToken = generateConsultationToken();
+                data.timestamp = Date.now(); // FIXED: Remove extra multiplication
+                options.body = JSON.stringify(data);
+                
+                console.log('Final request data:', data);
+                console.log('Token length validation:', data.securityToken.length > 20);
+            }
+
+            try {
+                console.log('Sending request with options:', options);
+                const response = await fetch(url, options);
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                // FIXED: Check content type before parsing
+                const contentType = response.headers.get('content-type');
+                console.log('Content-Type:', contentType);
+                
+                if (!contentType || !contentType.includes('application/json')) {
+                    const textResponse = await response.text();
+                    console.error('Server returned non-JSON response:', textResponse);
+                    
+                    showDebugInfo({
+                        error: 'Server returned non-JSON response',
+                        contentType: contentType,
+                        status: response.status,
+                        statusText: response.statusText,
+                        responseText: textResponse.substring(0, 500),
+                        url: url
+                    });
+                    
+                    throw new Error(`Server error: Expected JSON response but got ${contentType || 'unknown content type'}. Status: ${response.status}`);
+                }
+                
+                // Get response text first for better error handling
+                const responseText = await response.text();
+                console.log('Raw response text:', responseText);
+                
+                // Parse JSON with better error handling
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    console.log('Parsed response:', result);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    console.error('Failed to parse response:', responseText);
+                    
+                    showDebugInfo({
+                        error: 'JSON parse error',
+                        parseError: parseError.message,
+                        responseText: responseText,
+                        contentType: contentType,
+                        status: response.status
+                    });
+                    
+                    throw new Error(`Server returned invalid JSON: ${parseError.message}`);
+                }
+                
+                // Check for HTTP errors
+                if (!response.ok) {
+                    const errorMessage = result.error || `Server error: ${response.status} - ${response.statusText}`;
+                    console.error('API returned error:', errorMessage, result);
+                    
+                    showDebugInfo({
+                        error: 'API error response',
+                        status: response.status,
+                        statusText: response.statusText,
+                        apiError: result.error,
+                        fullResponse: result
+                    });
+                    
+                    throw new Error(errorMessage);
+                }
+                
+                return result;
+                
+            } catch (error) {
+                console.error('API call error:', error);
+                
+                // Handle network errors
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showDebugInfo({
+                        error: 'Network connection error',
+                        url: url,
+                        message: error.message,
+                        suggestion: 'Check if server is running and accessible'
+                    });
+                    throw new Error(`Cannot connect to server at ${CONSULTATION_CONFIG.serverUrl}. Please check if the server is running.`);
+                }
+                
+                // Re-throw the error if it's already been processed
+                if (error.message.includes('Server error:') || error.message.includes('Server returned')) {
+                    throw error;
+                }
+                
+                // Handle unexpected errors
+                showDebugInfo({
+                    error: 'Unexpected API call error',
+                    url: url,
+                    message: error.message,
+                    stack: error.stack,
+                    errorType: error.constructor.name
+                });
+                
+                throw new Error(`API call failed: ${error.message}`);
+            }
+        }
+
+        // FIXED: Main consultation booking handler with better error handling
+        async function handleConsultationBooking() {
+            const button = document.getElementById('consultationButton');
+            const originalButtonText = button.textContent;
+            
+            button.disabled = true;
+            button.textContent = 'Processing...';
+
+            try {
+                const receiptId = getConsultationReceiptId();
+                if (!receiptId) {
+                    throw new Error('Session expired. Please return from your original purchase page.');
+                }
+
+                console.log('Starting consultation booking for receipt:', receiptId);
+
+                // Step 1: Validate session
+                showConsultationStatus('Verifying your payment details...', 'widget-loading');
+                
+                let validationResult;
+                try {
+                    validationResult = await makeConsultationApiCall('/validate', {
+                        id: receiptId
+                    });
+                    console.log('Validation successful:', validationResult);
+                    
+                    if (!validationResult.success) {
+                        throw new Error(validationResult.error || 'Payment verification failed');
+                    }
+                    
+                } catch (validationError) {
+                    console.error('Validation failed:', validationError);
+                    throw new Error(`Payment verification failed: ${validationError.message}`);
+                }
+
+                // Step 2: Process consultation booking and charge card
+                showConsultationStatus('Processing payment for your consultation...', 'widget-loading');
+                
+                const bookingResult = await makeConsultationApiCall('/book', {
+                    id: receiptId,
+                    consultation_type: CONSULTATION_CONFIG.consultationType,
+                    amount: CONSULTATION_CONFIG.consultationFee
+                });
+
+                console.log('Booking result:', bookingResult);
+
+                // Handle different response types
+                if (bookingResult.success) {
+                    if (bookingResult.paymentId) {
+                        // Direct payment successful - card was charged
+                        showConsultationStatus('Payment successful! Your consultation has been booked.', 'widget-success');
+                        button.textContent = '✓ Session Booked';
+                        button.className = 'consultation-button success';
+                        
+                        // Show tracking information
+                        showTrackingInfo({
+                            ...bookingResult.trackingInfo,
+                            planId: bookingResult.planId,
+                            bookingId: bookingResult.bookingId
+                        });
+
+                        // Show confirmation details after a delay
+                        setTimeout(() => {
+                            if (bookingResult.bookingId) {
+                                showConsultationStatus(
+                                    `✓ Confirmation ID: ${bookingResult.bookingId}<br>Check your email for scheduling details.`, 
+                                    'widget-success'
+                                );
+                            }
+                        }, 3000);
+
+                    } else if (bookingResult.checkout_url) {
+                        // Redirect to Whop checkout for payment
+                        showConsultationStatus('Redirecting to secure payment page...', 'widget-loading');
+                        
+                        setTimeout(() => {
+                            window.location.href = bookingResult.checkout_url;
+                        }, 1500);
+                        return; // Don't re-enable button since we're redirecting
+                    } else {
+                        console.error('Unexpected booking response format:', bookingResult);
+                        throw new Error('Unexpected response from payment processor');
+                    }
+                } else {
+                    throw new Error(bookingResult.error || 'Booking failed - unknown error');
+                }
+
+            } catch (error) {
+                console.error('Consultation booking failed:', error);
+                
+                // Show user-friendly error message
+                let userMessage = error.message;
+                if (error.message.includes('Payment verification failed')) {
+                    userMessage = 'Unable to verify your original payment. Please try again or contact support.';
+                } else if (error.message.includes('Cannot connect to server')) {
+                    userMessage = 'Unable to connect to payment processor. Please check your internet connection and try again.';
+                } else if (error.message.includes('payment methods found')) {
+                    userMessage = 'No payment method found. Please add a payment method to your account first.';
+                }
+                
+                showConsultationStatus(`Booking failed: ${userMessage}`, 'widget-error');
+                
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = 'Try Again';
+                button.className = 'consultation-button';
+                
+                // Show debug info for troubleshooting
+                showDebugInfo({
+                    error: error.message,
+                    receiptId: getConsultationReceiptId(),
+                    serverUrl: CONSULTATION_CONFIG.serverUrl,
+                    timestamp: new Date().toISOString(),
+                    errorStack: error.stack
+                });
+            }
+        }
+
+        // Initialize consultation widget
+        document.addEventListener('DOMContentLoaded', function() {
+            const receiptId = getConsultationReceiptId();
+
+            console.log('Page loaded');
+            console.log('Receipt ID:', receiptId);
+            console.log('Server URL:', CONSULTATION_CONFIG.serverUrl);
+            console.log('Debug mode:', DEBUG_MODE);
+
+            if (receiptId) {
+                showConsultationStatus('Ready to book your consultation session', 'widget-success');
+                console.log('Widget ready for booking');
+            } else {
+                showConsultationStatus('No payment ID found. Please return from your original purchase page.', 'widget-error');
+                document.getElementById('consultationButton').disabled = true;
+                console.log('No receipt ID found in URL parameters');
+            }
+            
+            // Show URL parameters for debugging
+            if (DEBUG_MODE) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const allParams = Object.fromEntries(urlParams.entries());
+                console.log('URL parameters:', allParams);
+                
+                if (Object.keys(allParams).length > 0) {
+                    showDebugInfo({
+                        urlParameters: allParams,
+                        currentUrl: window.location.href,
+                        serverUrl: CONSULTATION_CONFIG.serverUrl
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
